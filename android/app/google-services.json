@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "640535122569",
+    "project_id": "openfinance1-a216e",
+    "storage_bucket": "openfinance1-a216e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640535122569:android:3b4eab021bee1aeca96c58",
+        "android_client_info": {
+          "package_name": "com.nuevaof"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "640535122569-1e640ov2nsd28doskm97e1mdc6uphbt2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCI2BVq0uTCtkAkcox6eLq9hClLJbmr64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "640535122569-1e640ov2nsd28doskm97e1mdc6uphbt2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
