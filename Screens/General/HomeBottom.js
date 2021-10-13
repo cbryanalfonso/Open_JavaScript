@@ -45,6 +45,7 @@ export default function HomeBottom({ navigation }) {
               <Text>Seller</Text>
             </TouchableOpacity>
           </TouchableOpacity>
+          
         </ScrollView>
         <Text style={styles.txtNombre}>To invest</Text>
         <ScrollView horizontal style={styles.subcontainer}>
