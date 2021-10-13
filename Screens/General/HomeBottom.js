@@ -45,10 +45,17 @@ export default function HomeBottom({ navigation }) {
               <Text>Seller</Text>
             </TouchableOpacity>
           </TouchableOpacity>
-          
+
         </ScrollView>
         <Text style={styles.txtNombre}>To invest</Text>
         <ScrollView horizontal style={styles.subcontainer}>
+
+        <TouchableOpacity style={styles.touch}>
+            <Text>Nombre</Text>
+            <TouchableOpacity style={styles.btnInside}>
+              <Text>Seller</Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
 
         </ScrollView>
       </ScrollView>
@@ -88,6 +95,6 @@ const styles = StyleSheet.create({
     width: 50,
     height:30,
     backgroundColor: 'green',
-    alignSelf: 'flex-end'
+    alignSelf: 'center'
   },
 })
