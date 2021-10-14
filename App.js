@@ -30,9 +30,9 @@ export default class App extends Component{
           barStyle='dark-content'
         />
         <Stack.Navigator>
-          
-        <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
         <Stack.Screen name="Registro" component={Registro} options={{headerShown:false}}/>
+        <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
+        
         <Stack.Screen name ="BottomApp" component={BottonApp} options={{headerShown: false}} />
           
 

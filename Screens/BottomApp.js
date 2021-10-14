@@ -16,6 +16,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeBottom from './General/HomeBottom';
 import Mensajes from './General/Mensajes';
+import Calendario from './General/Calendario';
+import Ubicacion from './General/Ubucacion';
+import Perfil from './General/Perfil';
 
 //const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -31,6 +34,21 @@ export default function Registro({ navigation }) {
                 <Tab.Screen
                     name="Mensajes"
                     component={Mensajes}
+                    options={{headerShown: false}}
+                />
+                <Tab.Screen
+                    name= "Calendario"
+                    component={Calendario}
+                    option={{headerShown: false}}
+                />
+                <Tab.Screen 
+                    name = "Ubicacion"
+                    component={Ubicacion}
+                    options={{headerShown: false}}
+                />
+                <Tab.Screen
+                    name="Perfil"
+                    component={Perfil}
                     options={{headerShown: false}}
                 />
             </Tab.Navigator>

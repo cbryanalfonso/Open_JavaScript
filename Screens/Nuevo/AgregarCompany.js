@@ -1,7 +1,8 @@
 import React, { Component,useState } from 'react';
 import auth from '@react-native-firebase/auth';
 import { firebase } from '@react-native-firebase/auth';
-//import firestore from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
+
 
 import {
   StyleSheet,
@@ -10,16 +11,20 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 
-export default class AgregarCompany extends Component {
+//export default class AgregarCompany extends Component {
+export default function AgregarCompany({ navigation }) {
+  
 
+  
     
   siguiente=()=>{
     const { navigate } = this.props.navigation;
     navigate('RegistrarCompany')
   }
-  render() {
+  //render() {
     return (
       <View style={styles.container}>
         <View style={styles.datos}>
@@ -28,6 +33,7 @@ export default class AgregarCompany extends Component {
             placeholderTextColor="#bdc3c7"
             style={styles.txtInputDatos}
             autoCapitalize='none'
+            onChangeText={text => setNombre(text)}
             //keyboardType='numeric'
           >
 
@@ -37,16 +43,18 @@ export default class AgregarCompany extends Component {
           </TouchableOpacity>
           
           
+          
         </View>
         <View style={{justifyContent: 'flex-end', alignItems: 'flex-end', flex: 3, marginBottom: 100, marginRight: 20,}}>
          
-          <TouchableOpacity style={styles.btn} onPress={this.siguiente} >
+          <TouchableOpacity style={styles.btn} //onPress={buscar()} 
+          >
             
           </TouchableOpacity>
         </View>
       </View>
     );
-  }
+ // }
 }
 
 const styles = StyleSheet.create({
