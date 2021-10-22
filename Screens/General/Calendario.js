@@ -16,6 +16,12 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import {
+  Calendar,
+  CalendarList,
+  Agenda
+} from 'react-native-calendars'
+
 
 export default function Calendario({ navigation }) {
   return (
@@ -26,38 +32,31 @@ export default function Calendario({ navigation }) {
         />
       </View>
       <ScrollView>
-        <Text style={styles.txtNombre}>Profiles you match</Text>
-        <ScrollView horizontal style={{ flex: 0.5 }}>
-        </ScrollView>
-        <Text style={styles.txtNombre}>To trade</Text>
-        <ScrollView horizontal style={styles.subcontainer}>
+        <Calendar
+          markingType={'period'}
+          markedDates={{
+            '2021-10-15': { marked: true, dotColor: '#50cebb' },
+            '2012-05-16': { marked: true, dotColor: '#50cebb' },
+            '2012-05-21': { startingDay: true, color: '#50cebb', textColor: 'white' },
+            '2012-05-22': { color: '#70d7c7', textColor: 'white' },
+            '2012-05-23': { color: '#70d7c7', textColor: 'white', marked: true, dotColor: 'white' },
+            '2012-05-24': { color: '#70d7c7', textColor: 'white' },
+            '2012-05-25': { endingDay: true, color: '#50cebb', textColor: 'white' }
+          }}
+        />
 
-          <TouchableOpacity style={styles.touch}>
-            <Text>Nombre</Text>
-            <TouchableOpacity style={styles.btnInside}>
-              <Text>Seller</Text>
-            </TouchableOpacity>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.touch}>
-            <Text>Nombre</Text>
-            <TouchableOpacity style={styles.btnInside}>
-              <Text>Seller</Text>
-            </TouchableOpacity>
-          </TouchableOpacity>
-
-        </ScrollView>
-        <Text style={styles.txtNombre}>To invest</Text>
-        <ScrollView horizontal style={styles.subcontainer}>
-
-        <TouchableOpacity style={styles.touch}>
-            <Text>Nombre</Text>
-            <TouchableOpacity style={styles.btnInside}>
-              <Text>Seller</Text>
-            </TouchableOpacity>
-          </TouchableOpacity>
-
-        </ScrollView>
+        <Calendar
+          markingType={'period'}
+          markedDates={{
+            '2021-10-15': { marked: true, dotColor: '#50cebb' },
+            '2021-10-16': { marked: true, dotColor: '#50cebb' },
+            '2021-10-21': { startingDay: true, color: '#50cebb', textColor: 'white' },
+            '2021-10-22': { color: '#70d7c7', textColor: 'white' },
+            '2021-10-23': { color: '#70d7c7', textColor: 'white', marked: true, dotColor: 'white' },
+            '2021-10-24': { color: '#70d7c7', textColor: 'white' },
+            '2021-10-25': { endingDay: true, color: '#50cebb', textColor: 'white' }
+          }}
+        />
       </ScrollView>
     </View>
 
@@ -83,17 +82,17 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginLeft: 14,
   },
-  touch:{
-    margin:15,
+  touch: {
+    margin: 15,
     backgroundColor: 'white',
     width: 200,
-    height:200,
-    borderRadius:10,
+    height: 200,
+    borderRadius: 10,
   },
-  btnInside:{
+  btnInside: {
     borderRadius: 10,
     width: 50,
-    height:30,
+    height: 30,
     backgroundColor: 'green',
     alignSelf: 'center'
   },

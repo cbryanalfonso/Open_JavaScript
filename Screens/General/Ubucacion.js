@@ -15,6 +15,12 @@ import {
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  GoogleMap,
+  withScriptjs,
+  withGoogleMap,
+
+} from 'react-google-maps'
 
 
 export default function Ubicacion({ navigation }) {
@@ -26,38 +32,6 @@ export default function Ubicacion({ navigation }) {
         />
       </View>
       <ScrollView>
-        <Text style={styles.txtNombre}>Profiles you match</Text>
-        <ScrollView horizontal style={{ flex: 0.5 }}>
-        </ScrollView>
-        <Text style={styles.txtNombre}>To trade</Text>
-        <ScrollView horizontal style={styles.subcontainer}>
-
-          <TouchableOpacity style={styles.touch}>
-            <Text>Nombre</Text>
-            <TouchableOpacity style={styles.btnInside}>
-              <Text>Seller</Text>
-            </TouchableOpacity>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.touch}>
-            <Text>Nombre</Text>
-            <TouchableOpacity style={styles.btnInside}>
-              <Text>Seller</Text>
-            </TouchableOpacity>
-          </TouchableOpacity>
-
-        </ScrollView>
-        <Text style={styles.txtNombre}>To invest</Text>
-        <ScrollView horizontal style={styles.subcontainer}>
-
-        <TouchableOpacity style={styles.touch}>
-            <Text>Nombre</Text>
-            <TouchableOpacity style={styles.btnInside}>
-              <Text>Seller</Text>
-            </TouchableOpacity>
-          </TouchableOpacity>
-
-        </ScrollView>
       </ScrollView>
     </View>
 

@@ -36,22 +36,22 @@ export default function Registro({ navigation }) {
 
     const signIn = values => {
         if (values.email && values.password) {
-         // setLoader(true);
-          auth()
-            .signInWithEmailAndPassword(values.email, values.password)
-            .then(userCredential => {
-              console.log("Inicio de sesión exitoso. :D");
-              // Signed in
-              navigation.navigate('BottomApp');
-              //setLoader(false);
-            })
-            .catch(error => {
-             //setLoader(false);
-              var errorCode = error.code;
-              var errorMessage = error.message;
-            });
+            // setLoader(true);
+            auth()
+                .signInWithEmailAndPassword(values.email, values.password)
+                .then(userCredential => {
+                    console.log("Inicio de sesión exitoso. :D");
+                    // Signed in
+                    navigation.navigate('BottomApp');
+                    //setLoader(false);
+                })
+                .catch(error => {
+                    //setLoader(false);
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                });
         }
-      };
+    };
 
     //render() {
     return (
@@ -75,7 +75,16 @@ export default function Registro({ navigation }) {
                         <View style={{ alignItems: 'center' }}>
 
                             <Text style={styles.txtTitulo}>Sign In</Text>
-                            <Text style={styles.txtAccount}> New User?create an account</Text>
+
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.txtAccount}> New User?</Text>
+                                <TouchableOpacity onPress={()=>{
+                                    navigation.navigate('Home');
+                                }}>
+                                    <Text style={styles.crearCuenta}>  create an account</Text>
+                                </TouchableOpacity>
+                            </View>
+
                             <TextInput
                                 placeholder="Ingrese su correo electronico"
                                 placeholderTextColor="#bdc3c7"
@@ -101,7 +110,7 @@ export default function Registro({ navigation }) {
                                 <Text style={styles.hipervinculo}>Forgot password</Text>
                             </TouchableOpacity>
 
-                            <View style={{ alignItems: 'flex-start', marginLeft: 30, alignSelf:'flex-start' }}>
+                            <View style={{ alignItems: 'flex-start', marginLeft: 30, alignSelf: 'flex-start' }}>
                                 <Text style={styles.txtAccount}> Keep me signed in</Text>
                             </View>
                             <View>
@@ -172,13 +181,19 @@ const styles = StyleSheet.create({
         color: "#2980b9",
         textDecorationLine: 'underline'
     },
+    crearCuenta: {
+        color: "#2980b9",
+        fontSize: 15,
+        marginTop: 20,
+        marginBottom: 20,
+    },
     btn: {
         borderRadius: 20,
         backgroundColor: '#3498db',
         marginHorizontal: 20,
         alignItems: 'center',
         height: 60,
-        width:300,
+        width: 300,
         justifyContent: 'center',
     },
     txtBtn: {
