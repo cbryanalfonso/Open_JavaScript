@@ -19,6 +19,7 @@ import AcercaCompany from './Screens/Nuevo/AcercaComapany';
 import AgregarCompany from './Screens/Nuevo/AgregarCompany';
 import RegistrarCompany from './Screens/Nuevo/RegistrarCompany';
 import CuentaAcercaCompany from './Screens/Nuevo/CuentaAcercaCompany';
+import crearCuenta from './Screens/Registro/crearCuenta';
 const Stack = createNativeStackNavigator();
 
 export default class App extends Component{
@@ -30,17 +31,23 @@ export default class App extends Component{
           barStyle='dark-content'
         />
         <Stack.Navigator>
+
+        <Stack.Screen name ="BottomApp" component={BottonApp} options={{headerShown: false}} />
+          
+
         <Stack.Screen name="Registro" component={Registro} options={{headerShown:false}}/>
         <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
         
-        <Stack.Screen name ="BottomApp" component={BottonApp} options={{headerShown: false}} />
-          
+      
 
         <Stack.Screen name ="AcercaCompany" component={AcercaCompany} options={{headerShown:true}}/>
         <Stack.Screen name="AgregarCompany" component={AgregarCompany} options={{headerShown: true}}/>
         <Stack.Screen name ="RegistrarCompany" component={RegistrarCompany} options={{headerShown: true}}/>
         <Stack.Screen name ="CuentaAcercaCompany" component={CuentaAcercaCompany} options={{headerShown: true}}/>
+
+        <Stack.Screen name = "crearCuenta" component={crearCuenta} options={{headerShown: false}}/>
         
+       
         </Stack.Navigator>
       </NavigationContainer>
     );

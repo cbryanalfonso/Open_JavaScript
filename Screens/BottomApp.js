@@ -46,7 +46,7 @@ export default function Registro({ navigation }) {
                 component={Calendario}
                 options={{
                     headerShown: false,
-                    tabBarLabel: 'Home',
+                    tabBarLabel: 'Mensajes',
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="home" color={color} size={size} />
                     ),
@@ -57,7 +57,7 @@ export default function Registro({ navigation }) {
                 component={Ubicacion}
                 options={{
                     headerShown: false,
-                    tabBarLabel: 'Home',
+                    tabBarLabel: 'Ubicacion',
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="home" color={color} size={size} />
                     ),
@@ -68,7 +68,7 @@ export default function Registro({ navigation }) {
                 component={Perfil}
                 options={{
                     headerShown: false,
-                    tabBarLabel: 'Home',
+                    tabBarLabel: 'Perfil',
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons name="home" color={color} size={size} />
                     ),

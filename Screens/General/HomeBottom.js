@@ -19,6 +19,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export default function HomeBottom({ navigation }) {
   return (
+    
     <View style={styles.container}>
       <View style={{ alignItems: 'flex-start', marginTop: 10, marginLeft: 10 }}>
         <Image style={{ width: 130, height: 70 }}

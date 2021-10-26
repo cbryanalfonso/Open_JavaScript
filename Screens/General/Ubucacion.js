@@ -15,12 +15,6 @@ import {
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {
-  GoogleMap,
-  withScriptjs,
-  withGoogleMap,
-
-} from 'react-google-maps'
 
 
 export default function Ubicacion({ navigation }) {

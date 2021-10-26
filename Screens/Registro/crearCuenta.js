@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import auth from '@react-native-firebase/auth';
-import { firebase } from '@react-native-firebase/auth';
+//import { firebase } from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore'
 import {
     SafeAreaView,
     ScrollView,
@@ -16,45 +17,44 @@ import {
     Image,
     Alert,
 } from 'react-native';
-import { Formik } from 'formik'
+import { Formik } from 'formik';
 
 
+export default function crearCuenta({ navigation }) {
 
-export default function Registro({ navigation }) {
-    /*const signUp = (values) => {
-        try {
-            if(values.email == '' && values.password ==''){
-                Alert.alert("Debe rellenar las casillas de texto")
-            }else{
-                 firebase.auth().createUserWithEmailAndPassword(values.email,values.password)  
-                 console.log('Usuario creado')  
-            }
-        } catch (e) {
-            console.log('Usuario no creado')
-        }
-    }*/
-
-    const signIn = values => {
-        if (values.email && values.password) {
-            // setLoader(true);
+    
+    const rec = ()=>{
+       const user = auth().currentUser;
+      // const con = firestore().collection('Registro').where("uid", "==", user.uid).get()
+        console.log(user)
+    }
+    const signUp = ( values ) =>{
+        
+        if(values.email && values.password && values.name && values.lastName){
             auth()
-                .signInWithEmailAndPassword(values.email, values.password)
-                .then(userCredential => {
-                    console.log("Inicio de sesión exitoso. :D");
-                    // Signed in
-                    navigation.navigate('BottomApp');
-                    //setLoader(false);
-                })
-                .catch(error => {
-                    //setLoader(false);
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    console.log('Inicio de sesión fallido')
-                });
+            .createUserWithEmailAndPassword(values.email, values.password)
+            
+            .catch(error =>{
+                var errorCode = error.code;
+          var errorMessage = error.message;
+          console.log(errorMessage);
+            });
+        }else{
+            alert('Please complete')
         }
-    };
+        auth().onAuthStateChanged(function(user){
+            if(user){
+                firestore().collection('Registro').add({
+                    nombre : values.name,
+                    apellido: values.lastName,
+                    uid: user.uid,
+                    email: user.email
+                });
+                alert('usuario logeado ')
+            }
+        })
+    }
 
-    //render() {
     return (
         <SafeAreaView style={styles.container}>
             <View style={{ alignItems: 'center', marginTop: 20, }}>
@@ -63,31 +63,51 @@ export default function Registro({ navigation }) {
                 />
             </View>
             <View style={styles.subcontainer}>
+                
                 <Formik
                     initialValues={{
                         name: '',
+                        lastName: '',
                         email: '',
                         password: '',
                         imageUrl: '',
                     }}
-                    onSubmit={(values) => signIn(values)}
+                    onSubmit={(values) => signUp(values)}
                 >
                     {({ handleChange, handleBlur, handleSubmit, values }) => (
                         <View style={{ alignItems: 'center' }}>
 
-                            <Text style={styles.txtTitulo}>Sign In</Text>
+                            <Text style={styles.txtTitulo}>Sign Up</Text>
 
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={styles.txtAccount}> New User?</Text>
-                                <TouchableOpacity onPress={()=>{
-                                    navigation.navigate('crearCuenta');
+                                <Text style={styles.txtAccount}> Already an User?</Text>
+                                <TouchableOpacity onPress={() => {
+                                    navigation.navigate('Registro');
                                 }}>
-                                    <Text style={styles.crearCuenta}>  create an account</Text>
+                                    <Text style={styles.crearCuenta}>  Sign In</Text>
                                 </TouchableOpacity>
                             </View>
 
                             <TextInput
-                                placeholder="Ingrese su correo electronico"
+                                placeholder="First Name"
+                                placeholderTextColor="#bdc3c7"
+                                onChangeText={handleChange('name')}
+                                onBlur={handleBlur('name')}
+                                value={values.name}
+                                style={styles.txtInput}
+                            ></TextInput>
+
+<TextInput
+                                placeholder="Last Name"
+                                placeholderTextColor="#bdc3c7"
+                                onChangeText={handleChange('lastName')}
+                                onBlur={handleBlur('lastName')}
+                                value={values.lastName}
+                                style={styles.txtInput}
+                            ></TextInput>
+
+                            <TextInput
+                                placeholder="Username or email"
                                 placeholderTextColor="#bdc3c7"
                                 onChangeText={handleChange('email')}
                                 onBlur={handleBlur('email')}
@@ -95,8 +115,10 @@ export default function Registro({ navigation }) {
                                 style={styles.txtInput}
                                 autoCapitalize='none'
                             ></TextInput>
+
+
                             <TextInput
-                                placeholder="Ingrese su contraseña"
+                                placeholder="Password"
                                 placeholderTextColor="#bdc3c7"
                                 autoCapitalize="none"
                                 underlineColorAndroid={'transparent'}
@@ -107,16 +129,11 @@ export default function Registro({ navigation }) {
                                 style={styles.txtInput}
                             ></TextInput>
 
-                            <TouchableOpacity style={{ alignSelf: 'flex-end', marginTop: 30, marginRight: 30, }}>
-                                <Text style={styles.hipervinculo}>Forgot password</Text>
-                            </TouchableOpacity>
 
-                            <View style={{ alignItems: 'flex-start', marginLeft: 30, alignSelf: 'flex-start' }}>
-                                <Text style={styles.txtAccount}> Keep me signed in</Text>
-                            </View>
+                           
                             <View>
                                 <TouchableOpacity style={styles.btn} onPress={handleSubmit}>
-                                    <Text style={styles.txtBtn}> Sign In </Text>
+                                    <Text style={styles.txtBtn}> Sign Up </Text>
                                 </TouchableOpacity>
                             </View>
 
@@ -124,13 +141,13 @@ export default function Registro({ navigation }) {
                     )}
                 </Formik>
 
-                <Text style={styles.textRegister}> ────────  Or Sign In With  ────────</Text>
+                <Text style={styles.textRegister}> ────────  Or Sign Up With  ────────</Text>
                 <View style={{ marginHorizontal: 20, flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <TouchableOpacity style={styles.btnIcono}>
+                    <TouchableOpacity style={styles.btnIcono} onPress={rec()}>
                         <Text > G </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.btnIcono}>
-                        <Text > G </Text>
+                    <TouchableOpacity style={styles.btnIcono} onPress={()=> auth().signOut()}>
+                        <Text >G </Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btnIcono}>
                         <Text > G </Text>
@@ -176,7 +193,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#ecf0f1",
         width: "90%",
         height: 55,
-        color: 'black'
+        color: 'black',
+        padding: 17
     },
     hipervinculo: {
         color: "#2980b9",
@@ -192,6 +210,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         backgroundColor: '#3498db',
         marginHorizontal: 20,
+        marginTop: 20,
         alignItems: 'center',
         height: 60,
         width: 300,
@@ -217,49 +236,3 @@ const styles = StyleSheet.create({
         marginTop: 30,
     },
 });
-/*
-constructor(props){
-        super(props)
-        this.state={
-            email: '',
-            password: '',
-            response: '',
-        }
-        this.signUp = this.signUp.bind(this)
-        this.login = this.login.bind(this)
-    }
-
-
-    async signUp(){
-        try {
-           if(this.state.email==='' || this.state.password===''){
-            Alert.alert('No puede hacer eso')
-           }else{
-            await firebase.auth().createUserWithEmailAndPassword(this.state.email,this.state.password)
-            Alert.alert('Usuario creado con exito')
-            this.setState({
-                response: 'account created',
-            })
-           // navigation.navigate()
-           }
-        } catch (e) {
-            this.setState({
-                response: e.toString()
-            })
-            console.log(e);
-        }
-    }
-
-    async login(){
-        try{
-            await firebase.auth().signInWithEmailAndPassword(this.state.email,this.state.password)
-            this.setState({
-                response: 'usuario logeado'
-            })
-        }catch(error){
-            this.setState({
-                response: error.toString()
-            })
-        }
-    }
-*/
