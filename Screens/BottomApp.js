@@ -27,7 +27,19 @@ export default function Registro({ navigation }) {
         let iconName
         switch (route.name) {
             case "H":
-                iconName='compass-outline'
+                iconName='home'
+                break;
+            case  "Mensajes":
+                iconName='forum'
+                break;
+            case "Calendario":
+                iconName="calendar"
+                break;
+            case "Ubicacion":
+                iconName="google-maps"
+                break;
+            case "Perfil":
+                iconName="account"
                 break;
         
         }
@@ -58,6 +70,7 @@ export default function Registro({ navigation }) {
                 component={HomeBottom}
                 options={{
                     headerShown: false,
+                    tabBarShowLabel: false,
                 }}
             />
             <Tab.Screen
@@ -65,6 +78,7 @@ export default function Registro({ navigation }) {
                 component={Mensajes}
                 options={{
                     headerShown: false,
+                    tabBarShowLabel: false,
                    
                 }}
             />
@@ -73,6 +87,7 @@ export default function Registro({ navigation }) {
                 component={Calendario}
                 options={{
                     headerShown: false,
+                    tabBarShowLabel: false,
                    
                 }}
             />
@@ -81,6 +96,7 @@ export default function Registro({ navigation }) {
                 component={Ubicacion}
                 options={{
                     headerShown: false,
+                    tabBarShowLabel: false,
                     
                 }}
             />
@@ -89,8 +105,7 @@ export default function Registro({ navigation }) {
                 component={Perfil}
 
                 options={{
-
-                 
+                    tabBarShowLabel: false,
                     
                 }}
                 

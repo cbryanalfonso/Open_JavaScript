@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from 'react';
-import auth from '@react-native-firebase/auth';
+import auth, { firebase } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 import {
@@ -14,14 +14,18 @@ import {
   FlatList,
   Pressable,
 } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Avatar, Button } from 'react-native-elements';
 import Modal from '../../Componentes/Modall';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+export const getCurrentUser = () => {
+  return firebase.auth().currentUser
+}
 
 export default function Perfil({ navigation }) {
 
   const [showModal, setShowModal] = useState(false)
+  console.log(firebase.auth().currentUser)
 
   return (
     <SafeAreaView style={styles.container}>
@@ -46,10 +50,18 @@ export default function Perfil({ navigation }) {
           </View>
           <View style={{ paddingVertical: 30, }}>
             <View style={{ flex: 1, flexDirection: 'row' }}>
-              <View style={{ flex: 1 }}>
-                <TouchableOpacity style={styles.btnFoto}>
-                  <Image source={require('../../resources/editing.png')} style={styles.imagen}></Image>
-                </TouchableOpacity>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Avatar
+                  rounded
+                  size="large"
+                  containerStyle={styles.btnFoto}
+                  source={
+                    getCurrentUser().photoURL
+                      ? { uri: photoURL }
+                      :
+                      require("../../resources/avatar-default.jpg")
+                  }
+                />
               </View>
               <View style={styles.Foto}>
                 <TouchableOpacity style={styles.botonesPerfil}>
@@ -65,7 +77,13 @@ export default function Perfil({ navigation }) {
 
             </View>
 
-            <Text style={[styles.Titulos, {fontSize:17, marginTop: 10}]}>NOMBRE DE LA PERSONA</Text>
+            <Text style={[styles.Titulos, { fontSize: 17, marginTop: 10, fontWeight: 'bold' }]}>{
+              getCurrentUser().displayName ? getCurrentUser().displayName : "Anónimo"
+            }</Text>
+
+            <Text style={[styles.Titulos, { fontSize: 17, marginTop: 1, color: 'black' }]}>{
+              getCurrentUser().email
+            }</Text>
           </View>
 
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 40 }}>
@@ -121,7 +139,7 @@ const styles = StyleSheet.create({
 
   },
   Titulos:
-    { color: "#0984e3", fontWeight: 'bold', fontSize: 20, padding: 20, }
+    { color: "#0984e3", fontSize: 20, paddingTop: 20, paddingLeft: 20, }
   ,
   txt: {
     color: 'blue',
@@ -180,13 +198,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   btnFoto: {
-    borderRadius: 100,
+
     backgroundColor: "#dfe6e9",
     width: 100,
     height: 100,
     marginLeft: 17,
-    justifyContent: 'center',
-    alignItems: 'center',
+
   },
   imagen: {
     height: 25,
@@ -214,5 +231,10 @@ const styles = StyleSheet.create({
         style={{ backgroundColor: 'red' }}
       ></Button>
 
+
+
+      <TouchableOpacity style={styles.btnFoto}>
+                  <Image source={require('../../resources/editing.png')} style={styles.imagen}></Image>
+                </TouchableOpacity>
 
 */

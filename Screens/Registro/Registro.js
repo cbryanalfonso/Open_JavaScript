@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import auth from '@react-native-firebase/auth';
 import { firebase } from '@react-native-firebase/auth';
 import {
@@ -17,6 +17,7 @@ import {
     Alert,
 } from 'react-native';
 import { Formik } from 'formik'
+import { Input, Icon } from 'react-native-elements'
 
 
 
@@ -33,7 +34,7 @@ export default function Registro({ navigation }) {
             console.log('Usuario no creado')
         }
     }*/
-
+    const [secury, setSecury] = useState(false)
     const signIn = values => {
         if (values.email && values.password) {
             // setLoader(true);
@@ -79,33 +80,45 @@ export default function Registro({ navigation }) {
 
                             <View style={{ flexDirection: 'row' }}>
                                 <Text style={styles.txtAccount}> New User?</Text>
-                                <TouchableOpacity onPress={()=>{
+                                <TouchableOpacity onPress={() => {
                                     navigation.navigate('crearCuenta');
                                 }}>
                                     <Text style={styles.crearCuenta}>  create an account</Text>
                                 </TouchableOpacity>
                             </View>
 
-                            <TextInput
+                            <Input
                                 placeholder="Ingrese su correo electronico"
                                 placeholderTextColor="#bdc3c7"
                                 onChangeText={handleChange('email')}
                                 onBlur={handleBlur('email')}
                                 value={values.email}
-                                style={styles.txtInput}
+                                containerStyle={styles.txtInput}
                                 autoCapitalize='none'
-                            ></TextInput>
-                            <TextInput
+                                underlineColorAndroid= 'transparent'
+                            ></Input>
+
+                            <Input
+                                containerStyle={styles.txtInput}
                                 placeholder="Ingrese su contraseña"
                                 placeholderTextColor="#bdc3c7"
                                 autoCapitalize="none"
-                                underlineColorAndroid={'transparent'}
+                                secureTextEntry={!secury}
                                 onChangeText={handleChange('password')}
                                 onBlur={handleBlur('password')}
                                 value={values.password}
-                                secureTextEntry={true}
-                                style={styles.txtInput}
-                            ></TextInput>
+                                underlineColorAndroid= '#ecf0f1'
+                                
+                               rightIcon={
+                                   <Icon name={ secury ? "eye-off-outline": "eye-outline"}
+                                   type="material-community" 
+                                   onPress={()=>setSecury(!secury)}
+                                   color="#f150" iconStyle={styles.icono}></Icon>
+                               }
+                            />
+                            
+                            
+                           
 
                             <TouchableOpacity style={{ alignSelf: 'flex-end', marginTop: 30, marginRight: 30, }}>
                                 <Text style={styles.hipervinculo}>Forgot password</Text>
@@ -157,6 +170,9 @@ const styles = StyleSheet.create({
         //alignItems: 'center',
         backgroundColor: 'white'
     },
+    icono: {
+        color: '#c1c1c1'
+    },
     txtTitulo: {
         marginTop: 20,
         color: 'black',
@@ -169,6 +185,12 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20,
     },
+    eye: {
+        position: 'absolute',
+        zIndex: 10,
+        top: '34%',
+        right: '4%',
+      },
     txtInput: {
         marginHorizontal: 20,
         marginVertical: 10,
@@ -176,7 +198,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#ecf0f1",
         width: "90%",
         height: 55,
-        color: 'black'
+        
     },
     hipervinculo: {
         color: "#2980b9",
@@ -262,4 +284,18 @@ constructor(props){
             })
         }
     }
+
+
+     <TextInput
+                                placeholder="Ingrese su contraseña"
+                                placeholderTextColor="#bdc3c7"
+                                autoCapitalize="none"
+                                underlineColorAndroid={'transparent'}
+                                onChangeText={handleChange('password')}
+                                onBlur={handleBlur('password')}
+                                value={values.password}
+                                secureTextEntry={true}
+                                style={styles.txtInput}
+
+                            ></TextInput>
 */
