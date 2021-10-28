@@ -12,11 +12,11 @@ import {
 } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
-export default function Modall({ isVisible, setVisible, children }) {
+export default function Modall({ navigation, isVisible, setVisible }) {
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={isVisible}
       onRequestClose={() => {
@@ -70,7 +70,16 @@ export default function Modall({ isVisible, setVisible, children }) {
             </View>
 
             <View style={{ marginTop: 30 }}>
-              <TouchableOpacity style={styles.btnSettings}>
+              <TouchableOpacity style={styles.btnSettings}
+                onPress={() => 
+                 
+                   
+                  navigation.navigate('Sponsors')
+                  
+                 
+              }
+              >
+
                 <View style={{ flex: 1, }}>
                   <Text style={styles.botonesText}>Sponsors</Text>
 
@@ -134,7 +143,7 @@ export default function Modall({ isVisible, setVisible, children }) {
             </View>
 
             <View style={{ marginTop: 30 }}>
-              <TouchableOpacity style={styles.btnSalir}>
+              <TouchableOpacity style={styles.btnSalir} onPress={()=>navigation.navigate('Registro')}>
                 <View style={{ flex: 1, }}>
                   <Text style={styles.salir}>Log out</Text>
 

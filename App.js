@@ -20,6 +20,9 @@ import AgregarCompany from './Screens/Nuevo/AgregarCompany';
 import RegistrarCompany from './Screens/Nuevo/RegistrarCompany';
 import CuentaAcercaCompany from './Screens/Nuevo/CuentaAcercaCompany';
 import crearCuenta from './Screens/Registro/crearCuenta';
+import Sponsors from './Screens/VentanasPerfil/Sponsors';
+import Modall from './Componentes/Modall';
+import Perfil from './Screens/General/Perfil';
 const Stack = createNativeStackNavigator();
 
 export default class App extends Component{
@@ -46,6 +49,8 @@ export default class App extends Component{
         <Stack.Screen name ="CuentaAcercaCompany" component={CuentaAcercaCompany} options={{headerShown: true}}/>
 
         <Stack.Screen name = "crearCuenta" component={crearCuenta} options={{headerShown: false}}/>
+        <Stack.Screen name = "Sponsors" component={Sponsors} options={{headerShown: false}}/>
+       
         
        
         </Stack.Navigator>
