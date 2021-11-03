@@ -13,19 +13,107 @@ import {
   ScrollView,
   FlatList,
   Pressable,
+  Platform,
+  PermissionsAndroid,
 } from 'react-native';
 import { Avatar, Button } from 'react-native-elements';
 import Modal from '../../Componentes/Modall';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  launchCamera,
+  launchImageLibrary
+} from 'react-native-image-picker';
+
 
 export const getCurrentUser = () => {
   return firebase.auth().currentUser
 }
 
+export const uploadImage = async(image,path, name) =>{
+  const result = { statusResponse: false, error: null, url: null}
+  //const ref = firesto
+  return result
+
+}
+
 export default function Perfil({ navigation }) {
 
+  const [filePath, setFilePath] = useState({});
+
+  const requestExternalWritePermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'External Storage Write Permission',
+            message: 'App needs write permission',
+            
+          },
+        );
+        // If WRITE_EXTERNAL_STORAGE Permission is granted
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn(err);
+        alert('Write permission err', err);
+      }
+      return false;
+    } else return true;
+  };
+
+  const requestCameraPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: 'Camera Permission',
+            message: 'App needs camera permission',
+          },
+        );
+        // If CAMERA Permission is granted
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn(err);
+        return false;
+      }
+    } else return true;
+  };
+
+  const chooseFile = (type) => {
+    let options = {
+      mediaType: type,
+      maxWidth: 300,
+      maxHeight: 550,
+      quality: 1,
+    
+    };
+    launchImageLibrary(options, (response) => {
+      console.log('Response = ', response);
+      console.log(response.assets)
+
+      if (response.didCancel) {
+        alert('Operación fallida');
+        return;
+      } else if (response.errorCode == 'camera_unavailable') {
+        alert('Imposible acceder a la camara');
+        return;
+      } else if (response.errorCode == 'permission') {
+        alert('Permiso denegado');
+        return;
+      } else if (response.errorCode == 'others') {
+        alert(response.errorMessage);
+        return;
+      }
+     
+      setFilePath(response);
+    });
+  };
+
+
+
   const [showModal, setShowModal] = useState(false)
-  console.log(firebase.auth().currentUser)
+  //console.log(firebase.auth().currentUser)
 
   return (
     <SafeAreaView style={styles.container}>
@@ -55,6 +143,7 @@ export default function Perfil({ navigation }) {
                   rounded
                   size="large"
                   containerStyle={styles.btnFoto}
+                  onPress={()=>chooseFile('photo')}
                   source={
                     getCurrentUser().photoURL
                       ? { uri: photoURL }
