@@ -24,6 +24,8 @@ import Sponsors from './Screens/VentanasPerfil/Sponsors';
 import Modall from './Componentes/Modall';
 import Perfil from './Screens/General/Perfil';
 import helpers from './acciones/helpers';
+import DataBase from './Screens/DB/DataBase';
+
 const Stack = createNativeStackNavigator();
 
 export default class App extends Component{
@@ -35,15 +37,18 @@ export default class App extends Component{
           barStyle='dark-content'
         />
         <Stack.Navigator>
-       
+
       
+          
         <Stack.Screen name ="BottomApp" component={BottonApp} options={{headerShown: false}} />
+        <Stack.Screen name="Registro" component={Registro} options={{headerShown:false}}/>
+        
+       
           
 
-        <Stack.Screen name="Registro" component={Registro} options={{headerShown:false}}/>
-        <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
-        
+       
       
+        <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
 
         <Stack.Screen name ="AcercaCompany" component={AcercaCompany} options={{headerShown:true}}/>
         <Stack.Screen name="AgregarCompany" component={AgregarCompany} options={{headerShown: true}}/>
