@@ -16,68 +16,17 @@ import { getCurrentUser } from '../Screens/General/Perfil';
 
 
 import firestore from '@react-native-firebase/firestore'
-import AcercaComapanyModal from './AcercaCompanyModal';
-import { isEmpty } from 'lodash';
+import AgregarCompanyModal from './AgregarCompanyModal';
 
-export default function ActualizarPerfil({ navigation, isVisible, setVisible, name }) {
-
+export default function AcercaComapanyModal({ navigation, isVisible, setVisible, name }) {
     const [numero, setNumero] = useState('');
     const [nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
     const [informacion, setInformacion] = useState('');
-    const usuario = getCurrentUser().uid
     const email = getCurrentUser().email
     const [error, setError] = useState(null)
-    
-  const [ showCompany, setShowCompany] =useState(false)
 
-
-    useEffect(() => {
-        firestore()
-            .collection('Informacion')
-            .doc(usuario)
-            .get()
-            .then(querySnapshot => {
-                //console.log(querySnapshot.get('nombrePersona'))
-                setNombre(querySnapshot.get('nombrePersona'))
-                setNumero(querySnapshot.get('numeroTelefono'))
-                setApellido(querySnapshot.get('apellidoPersona'))
-                setInformacion(querySnapshot.get('Informacion'))
-
-            });
-
-    }, []);
-
-
-        //navigation.navigate('AcercaCompany')
-
-        const siguiente= () => {
-           /* if(isEmpty(nombre)){
-                setError("Debes ingresar el nombre correctamente")
-            }*/
-            /*try {
-                // firestore().collection('InformacionPersonal').
-                firestore().collection('Informacion').doc(usuario).update({
-                    numeroTelefono: numero,
-                    nombrePersona: nombre,
-                    Informacion: informacion,
-                    apellidoPersona: apellido,
-                })
-                console.log('Datos actualizados correctamente');
-                navigation.navigate('AcercaCompany')
-                //seguir()
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setNombre('')
-                setApellido('')
-                setNumero('')
-                setInformacion('')
-            }*/
-            setShowCompany(true)
-        }
-
+    const [showAgregarCompany, setShowAgregarCompany] = useState(false)
 
 
     return (
@@ -91,7 +40,7 @@ export default function ActualizarPerfil({ navigation, isVisible, setVisible, na
 
         >
             <View style={styles.centeredVieww}>
-                <AcercaComapanyModal isVisible={showCompany} setVisible={setShowCompany} navigation={navigation} name={usuario} />
+
                 <View style={styles.modalView}>
                     <View style={{ flexDirection: 'row', flex: 0.1, marginBottom: 30, }}>
 
@@ -120,16 +69,11 @@ export default function ActualizarPerfil({ navigation, isVisible, setVisible, na
                 <ScrollView style={styles.container} >
 
                     <View style={styles.subcontainer}>
-                        <View style={{ flex: 1.2, justifyContent: 'center', }}>
-                            <TouchableOpacity style={styles.btnImage}
-                            //onPress={this.selectFile}
-                            >
-                                <Text>s</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <AgregarCompanyModal isVisible={showAgregarCompany} setVisible={setShowAgregarCompany} navigation={navigation} name={name} />
+
                         <View style={{ flex: 2.5, alignItems: 'center', justifyContent: 'center' }}>
                             <Text style={styles.txtNombre}>
-                                ¡Hi, {nombre} {apellido} !
+                                ¡Tell us about your company !
                             </Text>
                         </View>
 
@@ -137,59 +81,25 @@ export default function ActualizarPerfil({ navigation, isVisible, setVisible, na
 
                     </View>
                     <View style={styles.datos}>
-
+                        <TouchableOpacity
+                            style={[styles.txtInputDatos, { justifyContent: 'center', }]}
+                            onPress={()=>setShowAgregarCompany(true)}
+                        >
+                            <Text style={{ color: "#bdc3c7" }}>Company</Text>
+                        </TouchableOpacity>
                         <TextInput
-                            placeholder="Ingrese su número de telefono"
-                            placeholderTextColor="#bdc3c7"
-                            style={styles.txtInput}
-                            autoCapitalize='none'
-                            keyboardType='numeric'
-                            defaultValue={numero}
-                            onChangeText={text => setNumero(text)}
-                            errorMessage={error}
-                        />
-
-                        <TextInput
-                            placeholder="Ingrese su nombre"
+                            placeholder="Rol Company"
                             placeholderTextColor="#bdc3c7"
                             style={styles.txtInputDatos}
                             autoCapitalize='none'
-                            defaultValue={nombre}
-                            errorMessage={error}
-                            //  onChange={(e)=> setNombre(e)}
-                            onChangeText={text => setNombre(text)}
+                        //keyboardType='numeric'
                         />
-                        <TextInput
-                            placeholder="Ingrese sus apellidos"
-                            placeholderTextColor="#bdc3c7"
-                            style={styles.txtInputDatos}
-                            autoCapitalize='none'
-                            defaultValue={apellido}
-                            errorMessage={error}
-                            //  onChange={(e)=> setNombre(e)}
-                            onChangeText={text => setApellido(text)}
-                        />
-
-
-                        <TextInput
-                            placeholder="Ingrese información que lo describa"
-                            placeholderTextColor="#bdc3c7"
-                            style={styles.txtInputPersonal}
-                            autoCapitalize='none'
-                            multiline={true}
-                            numberOfLines={10}
-                            defaultValue={informacion}
-                            onChangeText={text => setInformacion(text)}
-                            errorMessage={error}
-
-                        />
-
-
 
                     </View>
                     <View>
                         <TouchableOpacity style={styles.btn}
-                            onPress={siguiente}
+                        //onPress={siguiente}
+                       
 
                         >
                             <Text style={styles.txtBtn}> Next </Text>
@@ -301,7 +211,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'red'
     },
     txtNombre: {
-        color: 'blue',
+        color: '#2c3e50',
         fontSize: 20,
         fontWeight: 'bold',
         //marginTop: 20,
@@ -345,18 +255,18 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
     },
     btn: {
-        borderRadius: 20,
+        borderRadius: 25,
         backgroundColor: '#00a8ff',
         marginHorizontal: 20,
         alignItems: 'center',
-        height: 60,
-        width: 300,
+        height: 50,
+        width: 330,
         marginTop: 20,
         justifyContent: 'center',
         alignSelf: 'center'
     },
     txtBtn: {
-        fontSize: 30,
+        fontSize: 20,
         color: 'white',
         fontWeight: 'bold',
     },
@@ -381,30 +291,3 @@ const styles = StyleSheet.create({
 
 })
 
-
-
-/*
-export default function Modal ({ isVisible, setVisible, children}){
-
-    return(
-        <View style={{flex: 1, }}>
-           <Overlay
-            isVisible={isVisible}
-            overlayStyle={styles.overlay}
-            onBackdropPress={()=>setVisible(false)}
-        >
-            {
-                children
-            }
-
-        </Overlay>
-        </View>
-
-
-        <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={()=>setVisible(false)}
-              >
-                <Text style={styles.textStyle}>Hide Modal</Text>
-              </Pressable>
-    );*/

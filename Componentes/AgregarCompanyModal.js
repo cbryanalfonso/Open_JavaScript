@@ -16,73 +16,14 @@ import { getCurrentUser } from '../Screens/General/Perfil';
 
 
 import firestore from '@react-native-firebase/firestore'
-import AcercaComapanyModal from './AcercaCompanyModal';
-import { isEmpty } from 'lodash';
 
-export default function ActualizarPerfil({ navigation, isVisible, setVisible, name }) {
-
-    const [numero, setNumero] = useState('');
-    const [nombre, setNombre] = useState('');
-    const [apellido, setApellido] = useState('');
-    const [informacion, setInformacion] = useState('');
-    const usuario = getCurrentUser().uid
-    const email = getCurrentUser().email
-    const [error, setError] = useState(null)
-    
-  const [ showCompany, setShowCompany] =useState(false)
-
-
-    useEffect(() => {
-        firestore()
-            .collection('Informacion')
-            .doc(usuario)
-            .get()
-            .then(querySnapshot => {
-                //console.log(querySnapshot.get('nombrePersona'))
-                setNombre(querySnapshot.get('nombrePersona'))
-                setNumero(querySnapshot.get('numeroTelefono'))
-                setApellido(querySnapshot.get('apellidoPersona'))
-                setInformacion(querySnapshot.get('Informacion'))
-
-            });
-
-    }, []);
-
-
-        //navigation.navigate('AcercaCompany')
-
-        const siguiente= () => {
-           /* if(isEmpty(nombre)){
-                setError("Debes ingresar el nombre correctamente")
-            }*/
-            /*try {
-                // firestore().collection('InformacionPersonal').
-                firestore().collection('Informacion').doc(usuario).update({
-                    numeroTelefono: numero,
-                    nombrePersona: nombre,
-                    Informacion: informacion,
-                    apellidoPersona: apellido,
-                })
-                console.log('Datos actualizados correctamente');
-                navigation.navigate('AcercaCompany')
-                //seguir()
-
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setNombre('')
-                setApellido('')
-                setNumero('')
-                setInformacion('')
-            }*/
-            setShowCompany(true)
-        }
-
-
+export default function AgregarCompanyModal({ navigation, isVisible, setVisible, name }) {
+   const [company, setCompany] = useState('')
+   console.log(company)
 
     return (
         <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={isVisible}
             onRequestClose={() => {
@@ -91,9 +32,9 @@ export default function ActualizarPerfil({ navigation, isVisible, setVisible, na
 
         >
             <View style={styles.centeredVieww}>
-                <AcercaComapanyModal isVisible={showCompany} setVisible={setShowCompany} navigation={navigation} name={usuario} />
+
                 <View style={styles.modalView}>
-                    <View style={{ flexDirection: 'row', flex: 0.1, marginBottom: 30, }}>
+                    <View style={{ flexDirection: 'row', flex: 0.1, }}>
 
 
                         <View style={{ flex: 0.1, justifyContent: 'center', alignItems: 'center', }}>
@@ -117,85 +58,42 @@ export default function ActualizarPerfil({ navigation, isVisible, setVisible, na
 
 
                 </View>
-                <ScrollView style={styles.container} >
+                <View style={styles.container} >
 
-                    <View style={styles.subcontainer}>
-                        <View style={{ flex: 1.2, justifyContent: 'center', }}>
-                            <TouchableOpacity style={styles.btnImage}
-                            //onPress={this.selectFile}
-                            >
-                                <Text>s</Text>
+                    <View style={[styles.datos, { flexDirection: 'row' }]}>
+                        <View style={{ flex: 3 }}>
+                            <TextInput
+                                placeholder="Rol Company"
+                                placeholderTextColor="#bdc3c7"
+                                style={styles.txtInputDatos}
+                                autoCapitalize='none'
+                                //onChange={(e)=> setCompany(e)}
+                                onChangeText={text => setCompany(text)}
+                            />
+                        </View>
+                        <View style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
+                            <TouchableOpacity>
+                                <Text style={styles.txtNombre}>cancel</Text>
                             </TouchableOpacity>
-                        </View>
-                        <View style={{ flex: 2.5, alignItems: 'center', justifyContent: 'center' }}>
-                            <Text style={styles.txtNombre}>
-                                ¡Hi, {nombre} {apellido} !
-                            </Text>
+
                         </View>
 
-
-
                     </View>
-                    <View style={styles.datos}>
 
-                        <TextInput
-                            placeholder="Ingrese su número de telefono"
-                            placeholderTextColor="#bdc3c7"
-                            style={styles.txtInput}
-                            autoCapitalize='none'
-                            keyboardType='numeric'
-                            defaultValue={numero}
-                            onChangeText={text => setNumero(text)}
-                            errorMessage={error}
-                        />
+                    <ScrollView style={{ flex: 6}}>
+                        <Text>sd</Text>
 
-                        <TextInput
-                            placeholder="Ingrese su nombre"
-                            placeholderTextColor="#bdc3c7"
-                            style={styles.txtInputDatos}
-                            autoCapitalize='none'
-                            defaultValue={nombre}
-                            errorMessage={error}
-                            //  onChange={(e)=> setNombre(e)}
-                            onChangeText={text => setNombre(text)}
-                        />
-                        <TextInput
-                            placeholder="Ingrese sus apellidos"
-                            placeholderTextColor="#bdc3c7"
-                            style={styles.txtInputDatos}
-                            autoCapitalize='none'
-                            defaultValue={apellido}
-                            errorMessage={error}
-                            //  onChange={(e)=> setNombre(e)}
-                            onChangeText={text => setApellido(text)}
-                        />
+                    </ScrollView>
 
-
-                        <TextInput
-                            placeholder="Ingrese información que lo describa"
-                            placeholderTextColor="#bdc3c7"
-                            style={styles.txtInputPersonal}
-                            autoCapitalize='none'
-                            multiline={true}
-                            numberOfLines={10}
-                            defaultValue={informacion}
-                            onChangeText={text => setInformacion(text)}
-                            errorMessage={error}
-
-                        />
-
-
-
-                    </View>
-                    <View>
+                    <View style={{ flex: 0.3 }}>
                         <TouchableOpacity style={styles.btn}
-                            onPress={siguiente}
+                        //onPress={siguiente}
 
                         >
-                            <Text style={styles.txtBtn}> Next </Text>
+                            <Image source={require('../resources/mas.png')} style={{height:50,width:50}}></Image>
                         </TouchableOpacity>
                     </View>
-                </ScrollView>
+                </View>
 
             </View>
 
@@ -280,7 +178,7 @@ const styles = StyleSheet.create({
         width: 17,
     },
     container: {
-        flex: 8,
+        flex: 1,
         backgroundColor: 'white',
         //alignItems: 'center',
         marginHorizontal: 20,
@@ -301,9 +199,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'red'
     },
     txtNombre: {
-        color: 'blue',
-        fontSize: 20,
-        fontWeight: 'bold',
+        color: '#2c3e50',
+        fontSize: 15,
         //marginTop: 20,
         //marginLeft: 40,
     },
@@ -345,18 +242,19 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
     },
     btn: {
-        borderRadius: 20,
+        borderRadius: 50/2,
         backgroundColor: '#00a8ff',
-        marginHorizontal: 20,
         alignItems: 'center',
-        height: 60,
-        width: 300,
-        marginTop: 20,
+        height: 50,
+        width: 50,
         justifyContent: 'center',
-        alignSelf: 'center'
+        alignSelf: 'flex-end',
+        marginRight: 5,
+        marginTop: 20,
+
     },
     txtBtn: {
-        fontSize: 30,
+        fontSize: 20,
         color: 'white',
         fontWeight: 'bold',
     },
@@ -381,30 +279,3 @@ const styles = StyleSheet.create({
 
 })
 
-
-
-/*
-export default function Modal ({ isVisible, setVisible, children}){
-
-    return(
-        <View style={{flex: 1, }}>
-           <Overlay
-            isVisible={isVisible}
-            overlayStyle={styles.overlay}
-            onBackdropPress={()=>setVisible(false)}
-        >
-            {
-                children
-            }
-
-        </Overlay>
-        </View>
-
-
-        <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={()=>setVisible(false)}
-              >
-                <Text style={styles.textStyle}>Hide Modal</Text>
-              </Pressable>
-    );*/
