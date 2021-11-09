@@ -14,6 +14,9 @@ import {
 import { Overlay, Input } from 'react-native-elements';
 import { getCurrentUser } from '../Screens/General/Perfil';
 import { SearchBar } from 'react-native-elements';
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage'
+import auth from '@react-native-firebase/auth'
 
 
 import firestore from '@react-native-firebase/firestore'
@@ -50,6 +53,18 @@ export default function RegisterCompany({ navigation, isVisible, setVisible, nam
         setErrorWeb(null)
 
     }, []);
+
+    function OpenGallery(){
+        ImagePicker.openPicker({
+            width: 300,
+            height: 400,
+            cropping: true
+        }).then(image => {
+            setPhotoUrl(image.path)
+            //const resultUploadImage = uploadImage(image.path, "avatars", getCurrentUser().uid)
+               
+        });
+    }
 
     const siguiente = () => {
         setErrorName(null)
@@ -159,17 +174,31 @@ export default function RegisterCompany({ navigation, isVisible, setVisible, nam
                             onChangeText={text => setDescriptionCompany(text)}
                             errorMessage={errorDescripcion}
                         />
-                        <View>
+                        <View style={{flexDirection: 'row', marginRight: 20}}>
+                            <View style={{flex: 1,}}>
                             <Input
                                 placeholder="Company logo (url)"
                                 placeholderTextColor="#bdc3c7"
-                                style={styles.txtInputDatos}
+                                style={[styles.txtInputDatos, ]}
                                 autoCapitalize='none'
                                 inputContainerStyle={{ borderBottomWidth: 0 }}
                                 defaultValue={companyLogo}
                                 onChangeText={text => setCompanyLogo(text)}
                                 errorMessage={errorWeb}
                             />
+                            </View>
+                            <View style={{flex: 0.5, paddingRight: 10}}>
+                                <TouchableOpacity style={[styles.btn, {width: "100%", justifyContent: 'flex-start', alignItems: 'center' }]}
+                                    onPress={()=>OpenGallery()}
+                                >
+                                    <View style={{flex: 1}}>
+                                        <Text style={{color: 'white', fontWeight: 'bold'}}>Upload</Text>
+                                    </View>
+                                    <View style={{flex: 0.8}}>
+                                    <Image source={require('../resources/cloud.png')} style={{ height: 23, width: 23 }}></Image>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                         <Input
                             placeholder="Web page"
