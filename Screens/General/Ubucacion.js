@@ -10,7 +10,9 @@ import {
   Image,
   StatusBar,
   ScrollView,
-  Dimensions
+  Dimensions,
+  Alert,
+  PermissionsAndroid
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -47,23 +49,49 @@ export default class Ubucacion extends Component{
   }
 
   componentDidMount(){
-    navigator.geolocation.getCurrentPosition(
-      (position)=>{
-        const lat = position.coords.latitude
-            const lon = position.coords.longitude
-            const accuracy = position.coords.accuracy
-            this.calcDelta(lat,lon,accuracy)
+    const requestLocationPermission = async() =>{
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
+            'title': 'Location acces requerid',
+            'message': 'This app needs to access you location'
+          }
+        )
+        if(granted === PermissionsAndroid.RESULTS.GRANTED){
+          Geolocation.getCurrentPosition(
+            (position)=>{
+              const lat = position.coords.latitude
+                  const lon = position.coords.longitude
+                  const accuracy = position.coords.accuracy
+                  this.calcDelta(lat,lon,accuracy)
+                  console.log(lat)
+            }
+            
+          )
+          console.log("Ubicacion accedida")
+          
+        }else{
+          Alert.alert('Permiso denegado')
+        }
+      } catch (error) {
+        Alert.alert("error",error)
       }
-    )
+    }
+    requestLocationPermission();
   }
 
+  
   render(){
     return(
-      <View style={StyleSheet.container}>
+      <View style={styles.container}>
         {this.state.region.latitude ? <MapView
+        //provider={PROVIDER_GOOGLE}
           style={styles.map}
           initialRegion={this.state.region}
-        /> : null}
+          showsUserLocation
+          zoomEnabled={true}
+          showsMyLocationButton={false}
+        /> : <Text style={{color: 'red', fontSize: 30}}>NO FUNCIONA PERRA</Text>}
       </View>
     );
   }
