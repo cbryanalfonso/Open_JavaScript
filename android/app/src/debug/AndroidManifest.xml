@@ -6,6 +6,7 @@
     
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission Android:name="Android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:usesCleartextTraffic="true"

@@ -11,48 +11,93 @@ import {
     Pressable,
     Alert,
 } from 'react-native';
-import { Overlay } from 'react-native-elements';
+import { Overlay, Input } from 'react-native-elements';
 import { getCurrentUser } from '../Screens/General/Perfil';
 import { SearchBar } from 'react-native-elements';
 
 
 import firestore from '@react-native-firebase/firestore'
-import RegisterCompany from './RegisterCompany';
+import { isEmpty } from 'lodash';
 
-export default function AgregarCompanyModal({ navigation, isVisible, setVisible, name }) {
-    const [data, setData] = useState()
-    const [rtData, setRTData] = useState([])
-    const [company, setCompany] = useState('')
-    const [nombreCompania, setNombreCompania] = useState('')
-    const [paginaWEB, setPaginaWEB] = useState('')
-    const [descripcionCompania, setDescripcionCompania] = useState('')
-    const [showRegistrarCompany, setShowRegistrarCompany] = useState(false)
-    ///console.log(company)
 
-    async function loadRTData() {
-        const suscriber = firestore().collection('Empresa').onSnapshot(querySnapshot => {
-            const empresas = []
-            querySnapshot.forEach(documentSnapshot => {
-                empresas.push({
-                    ...documentSnapshot.data(),
-                    key: documentSnapshot.id
+export default function RegisterCompany({ navigation, isVisible, setVisible, name }) {
+
+    const [companyName, setCompanyName] = useState('')
+    const [descriptionCompany, setDescriptionCompany] = useState('')
+    const [companyLogo, setCompanyLogo] = useState('')
+    const [webPage, setWebPage] = useState('')
+    const [facebook, setFacebook] = useState('')
+    const [instagram, setInstagram] = useState('')
+    const [twitter, setTwitter] = useState('')
+    const [youtube, setYoutube] = useState('')
+    const [errorName, setErrorName] = useState(null)
+    const [errorDescripcion, setErrorDescripcion] = useState(null)
+    const [errorCompany, setErrorCompany] = useState(null)
+    const [errorWeb, setErrorWeb] = useState(null)
+    
+    useEffect(() => {
+        
+        setCompanyName('')
+        setDescriptionCompany('')
+        setCompanyLogo('')
+        setWebPage('')
+        setFacebook('')
+        setInstagram('')
+        setTwitter('')
+        setYoutube('')
+        setErrorName(null)
+        setErrorDescripcion(null)
+        setErrorWeb(null)
+
+    }, []);
+
+    const siguiente = () => {
+        setErrorName(null)
+        setErrorDescripcion(null)
+        setErrorWeb(null)
+
+        if(isEmpty(companyName)){
+            setErrorName("Should not be empty")
+            if(isEmpty(descriptionCompany)){
+                setErrorDescripcion("Should not be empty")
+                if(isEmpty(webPage)){
+                    setErrorWeb("Should not be empty")
+                }
+            } 
+        }
+        else if(isEmpty(descriptionCompany)){
+            setErrorDescripcion("Should not be empty")
+        }
+        /*if(isEmpty(companyLogo)){
+            setErrorCompany("Should not be empty")
+            return false
+        }*/
+        else if(isEmpty(webPage)){
+            setErrorWeb("Should not be empty")
+        }
+        else{
+            try {
+                firestore().collection('Empresa').add({
+                    nombreCompania: companyName,
+                    descripcionCompania: descriptionCompany,
+                    logoCompania: companyLogo,
+                    paginaWEB: webPage,
+                    facebook: facebook,
+                    instagram: instagram,
+                    twitter: twitter,
+                    youtube: youtube,
                 })
-            })
-            setRTData(empresas)
-        })
-        return () => suscriber()
+                console.log('datos actualizados correctamente.')
+            } catch (error) {
+                console.log(error);
+            }
+        }
     }
-    useEffect(() => { loadRTData() }, [])
+    const validar = () =>{
+        
 
-    function renderRTItem({ item }) {
-        return (
-            <TouchableOpacity style={styles.botones}>
-                <Text style={styles.txtBusqueda}>{item.nombreCompania}</Text>
-                <Text style={[styles.txtBusqueda, {fontWeight: 'normal'}]}>{item.Ubicacion}</Text>
-            </TouchableOpacity>
-
-        );
     }
+
 
     return (
         <Modal
@@ -65,7 +110,6 @@ export default function AgregarCompanyModal({ navigation, isVisible, setVisible,
 
         >
             <View style={styles.centeredVieww}>
-                <RegisterCompany isVisible={showRegistrarCompany} setVisible={setShowRegistrarCompany} navigation={navigation} name={name}/>
 
                 <View style={styles.modalView}>
                     <View style={{ flexDirection: 'row', flex: 0.1, }}>
@@ -77,7 +121,7 @@ export default function AgregarCompanyModal({ navigation, isVisible, setVisible,
                                 onPress={() => setVisible(false)}
                             >
 
-                                <Image source={require('../resources/back.png')} style={styles.imagen}></Image>
+                                <Image source={require('../resources/back.png')} style={{ height: 20, width: 20 }}></Image>
                             </TouchableOpacity>
                         </View>
                         <View style={{ flex: 1, justifyContent: 'center', }}>
@@ -89,48 +133,113 @@ export default function AgregarCompanyModal({ navigation, isVisible, setVisible,
                     </View>
 
 
-
-
                 </View>
-                <View style={styles.container} >
-
-                    <View style={[styles.datos, { flexDirection: 'row' }]}>
-                        <View style={{ flex: 3 }}>
-                            <TextInput
-                                placeholder="Rol Company"
+                <View style={[styles.container]} >
+                    <View style={styles.txtTitulo}>
+                        <Text style={styles.txtNombre}>
+                            Register Company
+                        </Text>
+                    </View>
+                    <ScrollView style={{ flex: 1, }}>
+                        <Input
+                            placeholder="Company Name"
+                            placeholderTextColor="#bdc3c7"
+                            style={[styles.txtInputDatos, { marginTop: 20, }]}
+                            inputContainerStyle={{ borderBottomWidth: 0 }}
+                            defaultValue={companyName}
+                            onChangeText={text => setCompanyName(text)}
+                            errorMessage={errorName}
+                        />
+                        <Input
+                            placeholder="Description"
+                            placeholderTextColor="#bdc3c7"
+                            style={styles.txtInputDatos}
+                            inputContainerStyle={{ borderBottomWidth: 0 }}
+                            defaultValue={descriptionCompany}
+                            onChangeText={text => setDescriptionCompany(text)}
+                            errorMessage={errorDescripcion}
+                        />
+                        <View>
+                            <Input
+                                placeholder="Company logo (url)"
                                 placeholderTextColor="#bdc3c7"
                                 style={styles.txtInputDatos}
                                 autoCapitalize='none'
-                                onChangeText={text => setCompany(text)}
+                                inputContainerStyle={{ borderBottomWidth: 0 }}
+                                defaultValue={companyLogo}
+                                onChangeText={text => setCompanyLogo(text)}
+                                errorMessage={errorWeb}
                             />
                         </View>
-                        <View style={{ flex: 0.5, justifyContent: 'center', alignItems: 'center' }}>
-                            <TouchableOpacity>
-                                <Text style={styles.txtNombre}>cancel</Text>
-                            </TouchableOpacity>
-
-                        </View>
-
-                    </View>
-
-                    <View style={{ flex: 1, }}>
-                    <FlatList
-                            data={rtData}
-                            renderItem={renderRTItem}
-                            keyExtractor={item => item.key}
+                        <Input
+                            placeholder="Web page"
+                            placeholderTextColor="#bdc3c7"
+                            style={styles.txtInputDatos}
+                            autoCapitalize='none'
+                            inputContainerStyle={{ borderBottomWidth: 0 }}
+                            defaultValue={webPage}
+                            onChangeText={text => setWebPage(text)}
+                            errorMessage={errorWeb}
+                        />
+                        <Input
+                            placeholder="Facebook (optional)"
+                            placeholderTextColor="#bdc3c7"
+                            style={styles.txtInputDatos}
+                            autoCapitalize='none'
+                            inputContainerStyle={{ borderBottomWidth: 0 }}
+                            defaultValue={facebook}
+                            onChangeText={text => setFacebook(text)}
+                        />
+                        <Input
+                            placeholder="Instagram (optional)"
+                            placeholderTextColor="#bdc3c7"
+                            style={styles.txtInputDatos}
+                            autoCapitalize='none'
+                            inputContainerStyle={{ borderBottomWidth: 0 }}
+                            defaultValue={instagram}
+                            onChangeText={text => setInstagram(text)}
+                        />
+                        <Input
+                            placeholder="Twitter (optional)"
+                            placeholderTextColor="#bdc3c7"
+                            style={styles.txtInputDatos}
+                            autoCapitalize='none'
+                            inputContainerStyle={{ borderBottomWidth: 0 }}
+                            defaultValue={twitter}
+                            onChangeText={text => setTwitter(text)}
+                        />
+                        <Input
+                            placeholder="Youtube (optional)"
+                            placeholderTextColor="#bdc3c7"
+                            style={[styles.txtInputDatos, { marginBottom: -2 }]}
+                            autoCapitalize='none'
+                            inputContainerStyle={{ borderBottomWidth: 0 }}
+                            defaultValue={youtube}
+                            onChangeText={text => setYoutube(text)}
                         />
 
-                    </View>
+                    </ScrollView>
+                   
 
-                    <View style={{ flex: 0.3 }}>
-                        <TouchableOpacity style={styles.btn}
-                        onPress={()=>
-                            setShowRegistrarCompany(true)
-                            
-                        }
 
+
+                    <View style={{ flex: 0.2, justifyContent: 'center' }}>
+                    <TouchableOpacity style={[styles.btn,{marginBottom: 10}]}
+                     //onPress={siguiente}
+                    >
+                        <View style={{ flex: 2.5, justifyContent: 'center' }}>
+                            <Text style={styles.txtBtn}> Locate my company on map </Text>
+                        </View>
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <Image source={require('../resources/ubicacion.png')} style={styles.imagen}></Image>
+                        </View>
+                    </TouchableOpacity>
+                        <TouchableOpacity style={[styles.btn]}
+                        onPress={siguiente}
                         >
-                            <Image source={require('../resources/mas.png')} style={{ height: 50, width: 50 }}></Image>
+                            <View style={{ justifyContent: 'center' }}>
+                                <Text style={[styles.txtBtn, { fontSize: 18 }]}>Save</Text>
+                            </View>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -146,24 +255,6 @@ export default function AgregarCompanyModal({ navigation, isVisible, setVisible,
 
 
 const styles = StyleSheet.create({
-    overlay: {
-        flexDirection: 'row',
-        flex: 0.4,
-        width: "90%",
-        height: '100%',
-        backgroundColor: 'red',
-        justifyContent: 'flex-end',
-        alignSelf: 'flex-end',
-        alignItems: 'flex-end',
-        alignContent: 'flex-end',
-
-
-    },
-    centeredView: {
-        flex: 1,
-        marginTop: 22,
-
-    },
     centeredVieww: {
         alignItems: "center",
 
@@ -182,12 +273,6 @@ const styles = StyleSheet.create({
         paddingLeft: 35,
         paddingRight: 35,
     },
-    button: {
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2
-    },
-
     btnIcono: {
         borderRadius: 50 / 2,
         backgroundColor: "#ecf0f1",
@@ -196,73 +281,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    botones: {
-        backgroundColor: '#ecf0f1', 
-            marginHorizontal: 20,
-            marginVertical: 10,
-            borderRadius: 20,
-            paddingHorizontal: 20,
-            paddingVertical: 10,
-            
-                
-    },
     imagen: {
-        height: 20,
-        width: 20,
-    },
-
-    salir: {
-        color: '#d63031',
-        fontSize: 20,
-        padding: 20,
-        textAlign: 'center',
-        fontWeight: 'bold',
-    },
-    imagenBtn: {
-        height: 17,
-        width: 17,
+        height: 30,
+        width: 30,
     },
     container: {
         flex: 1,
         backgroundColor: 'white',
-        //alignItems: 'center',
         marginHorizontal: 20,
-        // borderRadius: 20,
         marginBottom: 2,
         width: "100%",
-        paddingHorizontal: 30
+        paddingHorizontal: 20
     },
     subcontainer: {
         marginTop: 50,
         flexDirection: 'row',
         // marginBottom: 50,
-    },
-    btnImage: {
-        borderRadius: 50,
-        height: 100,
-        width: 100,
-        backgroundColor: 'red'
-    },
-    txtNombre: {
-        color: '#2c3e50',
-        fontSize: 15,
-        //marginTop: 20,
-        //marginLeft: 40,
-    },
-    txtBusqueda:{
-        color: '#2c3e50', 
-        fontWeight: 'bold'
-    },
-    txtInput: {
-        marginHorizontal: 20,
-        marginVertical: 10,
-        borderRadius: 15,
-        backgroundColor: "#ecf0f1",
-        width: "80%",
-        height: 55,
-        color: 'black',
-
-        paddingLeft: 20,
     },
     datos: {
         marginTop: 30,
@@ -270,14 +304,13 @@ const styles = StyleSheet.create({
     },
     txtInputDatos: {
         marginHorizontal: 20,
-        marginVertical: 10,
         borderRadius: 20,
         backgroundColor: "#ecf0f1",
         width: "90%",
-        height: 55,
         color: 'black',
-
+        fontSize: 14,
         paddingLeft: 20,
+       // marginVertical: -5
     },
     txtInputPersonal: {
         marginHorizontal: 20,
@@ -291,39 +324,29 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
     },
     btn: {
-        borderRadius: 50 / 2,
+        borderRadius: 20,
         backgroundColor: '#00a8ff',
-        alignItems: 'center',
-        height: 50,
-        width: 50,
+        marginHorizontal: 20,
+        paddingLeft: 20,
+        height: 40,
+        width: 300,
         justifyContent: 'center',
-        alignSelf: 'flex-end',
-        marginRight: 5,
-        marginTop: 20,
+        alignSelf: 'center',
+        flexDirection: 'row'
 
     },
-    txtBtn: {
+    txtNombre: {
+        color: '#2c3e50',
         fontSize: 20,
+        fontWeight: 'bold',
+        //marginTop: 20,
+        //marginLeft: 40,
+    },
+    txtTitulo: { flex: 0.05, alignItems: 'center', justifyContent: 'center' },
+    txtBtn: {
+        fontSize: 16,
         color: 'white',
         fontWeight: 'bold',
-    },
-    btnIcono: {
-        borderRadius: 100,
-        backgroundColor: "#dfe6e9",
-        width: 50,
-        height: 50,
-        marginHorizontal: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'center'
-    },
-    btnFoto: {
-
-        backgroundColor: "#dfe6e9",
-        width: 100,
-        height: 100,
-        marginLeft: 17,
-
     },
 
 })
