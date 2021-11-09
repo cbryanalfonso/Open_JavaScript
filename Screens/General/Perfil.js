@@ -58,7 +58,8 @@ export const updateProfile = async (data) => {
 export default function Perfil({ navigation }) {
 
   const [filePath, setFilePath] = useState({});
-  const [photoURL, setPhotoUrl] = useState(null)
+  const [photoURL, setPhotoUrl] = useState(getCurrentUser().photoURL)
+
   const [nombre, setNombre] = useState('')
 
   const usuario = getCurrentUser().uid
@@ -73,11 +74,10 @@ export default function Perfil({ navigation }) {
         setNombre(querySnapshot.get('nombrePersona'))
       });
     setPhotoUrl(getCurrentUser().photoURL)
-    console.log("renderizado", photoURL)
   })
 
 
-  const uploadImage = async (image, path, name) => {
+ const uploadImage = async (image, path, name) => {
     const result = { statusResponse: false, error: null, url: null }
     const ref = storage().ref(path).child(name)
     const blob = await fileToBlob(image)
@@ -121,7 +121,7 @@ export default function Perfil({ navigation }) {
 
 
   const [showModal, setShowModal] = useState(false)
-  const [showPerfil, setShowPerfil] = useState(true)
+  const [showPerfil, setShowPerfil] = useState(false)
 
   return (
     <SafeAreaView style={styles.container}>
@@ -151,12 +151,10 @@ export default function Perfil({ navigation }) {
             <View style={{ flex: 1, flexDirection: 'row' }}>
               <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Avatar
-                size="xlarge"
-               // activeOpacity={0.7}
+                  size="xlarge"
                   rounded
                   size="large"
                   containerStyle={styles.btnFoto}
-                  //onPress={() => chooseFile('photo')}
                   onPress={() => OpenGallery()}
                   source={
                     photoURL

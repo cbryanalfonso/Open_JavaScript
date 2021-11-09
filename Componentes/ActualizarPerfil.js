@@ -11,15 +11,16 @@ import {
     Pressable,
     Alert,
 } from 'react-native';
-import { Input, Overlay } from 'react-native-elements';
+import { Avatar, Input, Overlay } from 'react-native-elements';
 import { getCurrentUser } from '../Screens/General/Perfil';
 import CountryPicker from 'react-native-country-picker-modal'
-
-
-
+import ImagePicker from 'react-native-image-crop-picker';
 import firestore from '@react-native-firebase/firestore'
 import AcercaComapanyModal from './AcercaCompanyModal';
 import { isEmpty } from 'lodash';
+import storage from '@react-native-firebase/storage'
+import { fileToBlob } from '../acciones/helpers';
+import auth from '@react-native-firebase/auth'
 
 export default function ActualizarPerfil({ navigation, isVisible, setVisible, name }) {
 
@@ -31,7 +32,8 @@ export default function ActualizarPerfil({ navigation, isVisible, setVisible, na
     const usuario = getCurrentUser().uid
     const email = getCurrentUser().email
     const [error, setError] = useState(null)
-    
+    const [photoURL, setPhotoUrl] = useState(null)
+
     const [country, setCounty] = useState("")
     const [callingCode, setCallingCode] = useState("")
 
@@ -52,54 +54,91 @@ export default function ActualizarPerfil({ navigation, isVisible, setVisible, na
                 setCounty(querySnapshot.get('codigo'))
 
             });
+        setPhotoUrl(getCurrentUser().photoURL)
 
     }, []);
 
+    const uploadImage = async (image, path, name) => {
+        const result = { statusResponse: false, error: null, url: null }
+        const ref = storage().ref(path).child(name)
+        const blob = await fileToBlob(image)
+        await ref.put(blob)
+
+        try {
+            // await ref.put(blob)
+            const url = await storage().ref(`${path}/${name}`).getDownloadURL()
+            result.statusResponse = true
+            result.url = url
+
+            setPhotoUrl(image)
+            console.log(image)
+
+        } catch (error) {
+            result.error = error
+        }
+
+        return result
+    }
+
 
     //navigation.navigate('AcercaCompany')
+
+    function OpenGallery() {
+        ImagePicker.openPicker({
+            width: 300,
+            height: 400,
+            cropping: true
+        }).then(image => {
+            setPhotoUrl(image.path)
+            const resultUploadImage = uploadImage(image.path, "avatars", getCurrentUser().uid)
+                auth().currentUser.updateProfile({
+                    photoURL: image.path
+                })
+        });
+    }
 
     const siguiente = () => {
         /*if(!validar()){
             return
         }*/
-       // else {
-            try {
-                // firestore().collection('InformacionPersonal').
-                firestore().collection('Informacion').doc(usuario).update({
-                    numeroTelefono: numero,
-                    nombrePersona: nombre,
-                    Informacion: informacion,
-                    apellidoPersona: apellido,
-                    codigo: country,
-                })
-                console.log('Datos actualizados correctamente');
+        // else {
+        try {
+            // firestore().collection('InformacionPersonal').
+            firestore().collection('Informacion').doc(usuario).update({
+                numeroTelefono: numero,
+                nombrePersona: nombre,
+                Informacion: informacion,
+                apellidoPersona: apellido,
+                codigo: country,
+            })
+            console.log('Datos actualizados correctamente');
 
-            } catch (error) {
-                console.log(error);
-            } 
-            setShowCompany(true)
+        } catch (error) {
+            console.log(error);
+        }
+        setShowCompany(true)
         //}
 
     }
-    const validar = () =>{
+    const validar = () => {
         setError(null)
 
-        if (isEmpty(nombre) ) {
+        if (isEmpty(nombre)) {
             setError("Should not be empty")
             return false
         }
-        
-        if(isEmpty(numero) ){
+
+        if (isEmpty(numero)) {
             setError("Should not be empty")
             return false
         }
-        
-        if(isEmpty(apellido)){
+
+        if (isEmpty(apellido)) {
             setError("Should not be empty")
             return false
         }
-        
-        if(isEmpty(informacion)){
+
+        if (isEmpty(informacion)) {
             setError("Should not be empty")
             return false
         }
@@ -131,16 +170,24 @@ export default function ActualizarPerfil({ navigation, isVisible, setVisible, na
                         </View>
                     </View>
                 </View>
-                
+
                 <ScrollView style={styles.container} >
 
                     <View style={styles.subcontainer}>
                         <View style={{ flex: 1.2, justifyContent: 'center', }}>
-                            <TouchableOpacity style={styles.btnImage}
-                            //onPress={this.selectFile}
-                            >
-                                <Text>s</Text>
-                            </TouchableOpacity>
+                            <Avatar
+                                size="xlarge"
+                                rounded
+                                size="large"
+                                containerStyle={styles.btnFoto}
+                                onPress={() => OpenGallery()}
+                                source={
+                                    photoURL
+                                        ? { uri: photoURL }
+                                        :
+                                        require("../resources/avatar-default.jpg")
+                                }
+                            />
                         </View>
                         <View style={{ flex: 2.5, alignItems: 'center', justifyContent: 'center' }}>
                             <Text style={styles.txtNombre}>
@@ -152,36 +199,36 @@ export default function ActualizarPerfil({ navigation, isVisible, setVisible, na
 
                     </View>
                     <View style={styles.datos}>
-                        <View style={{flexDirection:'row',}}>
-                        <View style={{flex: 0.3, justifyContent: 'center', alignSelf: 'center', paddingLeft: 15,}}>
-                        <CountryPicker
-                            withFlag
-                            withCallingCode
-                            withFilter
-                            withCallingCodeButton
-                            containerStyle={styles.countrypicker}
-                            countryCode={country}
-                            
-                            onSelect={(country)=>{
-                                setCounty(country.cca2)
-                                setCallingCode(country.callingCode[0])
-                            }}
-                        />
-                        </View>
-                        <View style={{ flex: 1, justifyContent: 'center'}}>
-                        <Input
-                            placeholder="Ingrese su número de telefono"
-                            placeholderTextColor="#bdc3c7"
-                            style={[styles.txtInput, {width: "60%"}]}
-                            autoCapitalize='none'
-                            keyboardType='numeric'
-                            defaultValue={numero}
-                            onChangeText={text => setNumero(text)}
-                            errorMessage={error}
-                            inputContainerStyle={{borderBottomWidth:0}}
-                        />
-                        </View>
-                        
+                        <View style={{ flexDirection: 'row', }}>
+                            <View style={{ flex: 0.3, justifyContent: 'center', alignSelf: 'center', paddingLeft: 15, }}>
+                                <CountryPicker
+                                    withFlag
+                                    withCallingCode
+                                    withFilter
+                                    withCallingCodeButton
+                                    containerStyle={styles.countrypicker}
+                                    countryCode={country}
+
+                                    onSelect={(country) => {
+                                        setCounty(country.cca2)
+                                        setCallingCode(country.callingCode[0])
+                                    }}
+                                />
+                            </View>
+                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                <Input
+                                    placeholder="Ingrese su número de telefono"
+                                    placeholderTextColor="#bdc3c7"
+                                    style={[styles.txtInput, { width: "60%" }]}
+                                    autoCapitalize='none'
+                                    keyboardType='numeric'
+                                    defaultValue={numero}
+                                    onChangeText={text => setNumero(text)}
+                                    errorMessage={error}
+                                    inputContainerStyle={{ borderBottomWidth: 0 }}
+                                />
+                            </View>
+
                         </View>
 
                         <Input
@@ -193,7 +240,7 @@ export default function ActualizarPerfil({ navigation, isVisible, setVisible, na
                             errorMessage={error}
                             //  onChange={(e)=> setNombre(e)}
                             onChangeText={text => setNombre(text)}
-                            inputContainerStyle={{borderBottomWidth:0}}
+                            inputContainerStyle={{ borderBottomWidth: 0 }}
                         />
                         <Input
                             placeholder="Ingrese sus apellidos"
@@ -204,7 +251,7 @@ export default function ActualizarPerfil({ navigation, isVisible, setVisible, na
                             errorMessage={error}
                             //  onChange={(e)=> setNombre(e)}
                             onChangeText={text => setApellido(text)}
-                            inputContainerStyle={{borderBottomWidth:0}}
+                            inputContainerStyle={{ borderBottomWidth: 0 }}
                         />
 
 
@@ -218,7 +265,7 @@ export default function ActualizarPerfil({ navigation, isVisible, setVisible, na
                             defaultValue={informacion}
                             onChangeText={text => setInformacion(text)}
                             errorMessage={error}
-                            inputContainerStyle={{borderBottomWidth:0}}
+                            inputContainerStyle={{ borderBottomWidth: 0 }}
                         />
 
 
@@ -258,8 +305,8 @@ const styles = StyleSheet.create({
 
 
     },
-    countrypicker:{
-       backgroundColor: '#ecf0f1'
+    countrypicker: {
+        backgroundColor: '#ecf0f1'
     },
     centeredView: {
         flex: 1,
@@ -348,11 +395,11 @@ const styles = StyleSheet.create({
         //marginLeft: 40,
     },
     txtInput: {
-       // marginVertical: 10,
-       marginTop: 20,
+        // marginVertical: 10,
+        marginTop: 20,
         borderRadius: 15,
         backgroundColor: "#ecf0f1",
-       // width: "80%",
+        // width: "80%",
         //height: 55,
         color: 'black',
         paddingLeft: 20,
@@ -363,7 +410,7 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     txtInputDatos: {
-       
+
         fontSize: 15,
         borderRadius: 20,
         backgroundColor: "#ecf0f1",
@@ -374,7 +421,7 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
     },
     txtInputPersonal: {
-        
+
         fontSize: 15,
         borderRadius: 20,
         backgroundColor: "#ecf0f1",
@@ -413,38 +460,11 @@ const styles = StyleSheet.create({
     btnFoto: {
 
         backgroundColor: "#dfe6e9",
-        width: 100,
-        height: 100,
-        marginLeft: 17,
+        width: 110,
+        height: 110,
+        marginLeft: 5,
 
     },
 
 })
 
-
-
-/*
-export default function Modal ({ isVisible, setVisible, children}){
-
-    return(
-        <View style={{flex: 1, }}>
-           <Overlay
-            isVisible={isVisible}
-            overlayStyle={styles.overlay}
-            onBackdropPress={()=>setVisible(false)}
-        >
-            {
-                children
-            }
-
-        </Overlay>
-        </View>
-
-
-        <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={()=>setVisible(false)}
-              >
-                <Text style={styles.textStyle}>Hide Modal</Text>
-              </Pressable>
-    );*/
