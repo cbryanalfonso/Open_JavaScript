@@ -39,13 +39,13 @@ export default class App extends Component{
         <Stack.Navigator>
 
       
-          
-        <Stack.Screen name ="BottomApp" component={BottonApp} options={{headerShown: false}} />
-        <Stack.Screen name="Registro" component={Registro} options={{headerShown:false}}/>
+        
         
        
+        <Stack.Screen name ="BottomApp" component={BottonApp} options={{headerShown: false}} />
+        
           
-
+        <Stack.Screen name="Registro" component={Registro} options={{headerShown:false}}/>
        
       
         <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
