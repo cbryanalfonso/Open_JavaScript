@@ -19,6 +19,7 @@
   };
 */
 
+import { firebase } from '@react-native-firebase/firestore';
 import React, {useState} from 'react';
 // Import required components
 import {
@@ -45,6 +46,20 @@ export const fileToBlob = async(path)=>{
   const blob = await file.blob()
   return blob
 }
+
+export const updateProfile= async (data)=>{
+  const result ={ statusResponse:true, error: null}
+  try {
+    await firebase.auth().currentUser.updateProfile(data)
+    console.log(firebase.auth().currentUser.updateProfile(data))
+  } catch (error) {
+    result.statusResponse=false
+    result.error=error
+  }
+}
+
+
+
 
 /*
 export const helpers = () => {
