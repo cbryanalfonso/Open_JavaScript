@@ -91,7 +91,7 @@ export default class Ubucacion extends Component{
           showsUserLocation
           zoomEnabled={true}
           showsMyLocationButton={false}
-        /> : <Text style={{color: 'red', fontSize: 30}}>NO FUNCIONA PERRA</Text>}
+        /> : <Text style={{color: 'red', fontSize: 30}}>NO FUNCIONA PERRAs</Text>}
       </View>
     );
   }
