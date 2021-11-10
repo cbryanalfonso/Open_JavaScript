@@ -27,6 +27,7 @@ export default function AgregarCompanyModal({ navigation, isVisible, setVisible,
     const [paginaWEB, setPaginaWEB] = useState('')
     const [descripcionCompania, setDescripcionCompania] = useState('')
     const [showRegistrarCompany, setShowRegistrarCompany] = useState(false)
+    const [companyLogo, setCompanyLogo] = useState('')
     ///console.log(company)
 
     async function loadRTData() {
@@ -42,13 +43,25 @@ export default function AgregarCompanyModal({ navigation, isVisible, setVisible,
         })
         return () => suscriber()
     }
-    useEffect(() => { loadRTData() }, [])
+    useEffect(() => {
+        loadRTData()
+
+    }, [])
 
     function renderRTItem({ item }) {
         return (
             <TouchableOpacity style={styles.botones}>
-                <Text style={styles.txtBusqueda}>{item.nombreCompania}</Text>
-                <Text style={[styles.txtBusqueda, {fontWeight: 'normal'}]}>{item.Ubicacion}</Text>
+                <View style={{flexDirection: 'row'}}>
+                    <View style={{flex:2,}}>
+                        <Text style={styles.txtBusqueda}>{item.nombreCompania}</Text>
+                        <Text style={[styles.txtBusqueda, { fontWeight: 'normal' }]}>{item.Ubicacion}</Text>
+                    </View>
+                    <View style={{flex: 0.4, backgroundColor: 'black', marginRight: 10}}>
+                        <Image style={{ width: 100, height: 50, alignSelf: 'center', marginRight: 20 }}
+                            source={{ uri: item.logoCompania }}
+                        />
+                    </View>
+                </View>
             </TouchableOpacity>
 
         );
@@ -65,7 +78,7 @@ export default function AgregarCompanyModal({ navigation, isVisible, setVisible,
 
         >
             <View style={styles.centeredVieww}>
-                <RegisterCompany isVisible={showRegistrarCompany} setVisible={setShowRegistrarCompany} navigation={navigation} name={name}/>
+                <RegisterCompany isVisible={showRegistrarCompany} setVisible={setShowRegistrarCompany} navigation={navigation} name={name} />
 
                 <View style={styles.modalView}>
                     <View style={{ flexDirection: 'row', flex: 0.1, }}>
@@ -114,7 +127,7 @@ export default function AgregarCompanyModal({ navigation, isVisible, setVisible,
                     </View>
 
                     <View style={{ flex: 1, }}>
-                    <FlatList
+                        <FlatList
                             data={rtData}
                             renderItem={renderRTItem}
                             keyExtractor={item => item.key}
@@ -124,10 +137,10 @@ export default function AgregarCompanyModal({ navigation, isVisible, setVisible,
 
                     <View style={{ flex: 0.3 }}>
                         <TouchableOpacity style={styles.btn}
-                        onPress={()=>
-                            setShowRegistrarCompany(true)
-                            
-                        }
+                            onPress={() =>
+                                setShowRegistrarCompany(true)
+
+                            }
 
                         >
                             <Image source={require('../resources/mas.png')} style={{ height: 50, width: 50 }}></Image>
@@ -197,14 +210,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     botones: {
-        backgroundColor: '#ecf0f1', 
-            marginHorizontal: 20,
-            marginVertical: 10,
-            borderRadius: 20,
-            paddingHorizontal: 20,
-            paddingVertical: 10,
-            
-                
+        backgroundColor: '#ecf0f1',
+        marginHorizontal: 20,
+        marginVertical: 10,
+        borderRadius: 20,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+
+
     },
     imagen: {
         height: 20,
@@ -249,8 +262,8 @@ const styles = StyleSheet.create({
         //marginTop: 20,
         //marginLeft: 40,
     },
-    txtBusqueda:{
-        color: '#2c3e50', 
+    txtBusqueda: {
+        color: '#2c3e50',
         fontWeight: 'bold'
     },
     txtInput: {

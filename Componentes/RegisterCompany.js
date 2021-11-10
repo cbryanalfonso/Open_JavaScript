@@ -17,10 +17,12 @@ import { SearchBar } from 'react-native-elements';
 import ImagePicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage'
 import auth from '@react-native-firebase/auth'
+import { fileToBlob } from '../acciones/helpers';
 
 
 import firestore from '@react-native-firebase/firestore'
 import { isEmpty } from 'lodash';
+import AgregarCompanyModal from './AgregarCompanyModal';
 
 
 export default function RegisterCompany({ navigation, isVisible, setVisible, name }) {
@@ -37,6 +39,7 @@ export default function RegisterCompany({ navigation, isVisible, setVisible, nam
     const [errorDescripcion, setErrorDescripcion] = useState(null)
     const [errorCompany, setErrorCompany] = useState(null)
     const [errorWeb, setErrorWeb] = useState(null)
+    const [regresar, setRegresar] = useState(false)
     
     useEffect(() => {
         
@@ -59,13 +62,38 @@ export default function RegisterCompany({ navigation, isVisible, setVisible, nam
             width: 300,
             height: 400,
             cropping: true
-        }).then(image => {
-            setPhotoUrl(image.path)
-            //const resultUploadImage = uploadImage(image.path, "avatars", getCurrentUser().uid)
-               
-        });
+          }).then(image => {
+              
+            const resultUploadImage = uploadImage(image.path, "Logos", companyName)
+          });
     }
 
+    const uploadImage = async (image, path, name) => {
+        const result = { statusResponse: false, error: null, url: null }
+        const ref = storage().ref(path).child(name)
+        const blob = await fileToBlob(image)
+        await ref.put(blob)
+
+        try {
+            // await ref.put(blob)
+            const url = await storage().ref(`${path}/${name}`).getDownloadURL()
+            result.statusResponse = true
+            result.url = url
+
+            
+            console.log(url)
+            setCompanyLogo(url)
+        } catch (error) {
+            //result.error = error
+            console.log(error)
+        }
+
+        return result
+    }
+
+
+
+    
     const siguiente = () => {
         setErrorName(null)
         setErrorDescripcion(null)
@@ -103,15 +131,14 @@ export default function RegisterCompany({ navigation, isVisible, setVisible, nam
                     youtube: youtube,
                 })
                 console.log('datos actualizados correctamente.')
+                setRegresar(true)
             } catch (error) {
                 console.log(error);
             }
+            
         }
     }
-    const validar = () =>{
-        
-
-    }
+    
 
 
     return (
@@ -125,7 +152,7 @@ export default function RegisterCompany({ navigation, isVisible, setVisible, nam
 
         >
             <View style={styles.centeredVieww}>
-
+            <AgregarCompanyModal isVisible={regresar} setVisible={setRegresar} navigation={navigation} name={name}/>
                 <View style={styles.modalView}>
                     <View style={{ flexDirection: 'row', flex: 0.1, }}>
 
