@@ -1,114 +1,228 @@
-import React, { Component, useState, useEffect } from 'react';
-import Geolocation from '@react-native-community/geolocation';
-
+import React, { useState, useRef, useEffect } from 'react';
 import {
+  View,
+  Platform,
   StyleSheet,
   Text,
-  View,
-  TextInput,
-  TouchableOpacity,
   Image,
-  StatusBar,
+  TouchableOpacity,
+  FlatList,
+  Keyboard,
+  ActivityIndicator,
+  SafeAreaView,
   ScrollView,
-  Dimensions,
-  Alert,
-  PermissionsAndroid
 } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MapView from 'react-native-maps';
-const {width, height}= Dimensions.get('window')
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import Icon from 'react-native-vector-icons/FontAwesome';
+// import {useDispatch, useSelector} from 'react-redux';
+function Ubucacion({ navigation }) {
+  //const dispatch = useDispatch();
+  const mapRef = useRef(null);
+  const [cat, setCat] = useState(1);
+  const [points, setPoints] = useState([]);
+  const [company, setCompany] = useState(null);
+  const [textSearch, setTextSearch] = useState('');
+  const [dataSetSearch, setDataSetSearch] = useState([]);
+
+  const [showAler, setShowAlert] = useState(false);
+  const [safe, setSafe] = useState(false);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [newUserValue, setNewUserValue] = useState();
+  const [loading, setLoading] = useState(false);
+
+  const startLoading = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
 
 
-export default class Ubucacion extends Component{
-  constructor(){
-    super()
-    this.state={
-      region:{
-        latitude: null,
-        longitude: null,
-        latitudeDelta: null,
-        longitudeDelta: null,
-      }
-    }
-  }
-
-  calcDelta(lat, lon, accuracy){
-    const oneDegreeOfLongitudInMeters = 111.32;
-    const circumReference = (40075 /360)
-    const latDelta = accuracy * (1/ (Math.cos(lat) *circumReference))
-    const lonDelta = (accuracy / oneDegreeOfLongitudInMeters)
-    this.setState({
-      region:{
-        latitude: lat,
-        longitude: lon,
-        latitudeDelta: latDelta,
-        longitudeDelta: lonDelta,
-      }
-    })
-  }
-
-  componentDidMount(){
-    const requestLocationPermission = async() =>{
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
-            'title': 'Location acces requerid',
-            'message': 'This app needs to access you location'
-          }
-        )
-        if(granted === PermissionsAndroid.RESULTS.GRANTED){
-          Geolocation.getCurrentPosition(
-            (position)=>{
-              const lat = position.coords.latitude
-                  const lon = position.coords.longitude
-                  const accuracy = position.coords.accuracy
-                  this.calcDelta(lat,lon,accuracy)
-                  console.log(lat)
-            }
-            
-          )
-          console.log("Ubicacion accedida")
-          
-        }else{
-          Alert.alert('Permiso denegado')
-        }
-      } catch (error) {
-        Alert.alert("error",error)
-      }
-    }
-    requestLocationPermission();
-  }
-
-  
-  render(){
-    return(
-      <View style={styles.container}>
-        {this.state.region.latitude ? <MapView
-        //provider={PROVIDER_GOOGLE}
-          style={styles.map}
-          initialRegion={this.state.region}
-          showsUserLocation
-          zoomEnabled={true}
-          showsMyLocationButton={false}
-        /> : <Text style={{color: 'red', fontSize: 30}}>NO FUNCIONA PERRAs</Text>}
-      </View>
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      },
     );
-  }
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      },
+    );
 
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
+
+  useEffect(() => {
+
+    startLoading();
+  }, []);
+
+
+  const zoom = point => {
+    mapRef.current.animateToRegion(
+      {
+        latitude: point.lat,
+        longitude: point.lng,
+        latitudeDelta: 0.0005,
+        longitudeDelta: 0.0005,
+      },
+      1500,
+    );
+  };
+
+  const zoomout = point => {
+    mapRef.current.animateToRegion(
+      {
+        latitude: point.lat,
+        longitude: point.lng,
+        latitudeDelta: 0.1,
+        longitudeDelta: 0.1,
+      },
+      1500,
+    );
+    setCompany(null);
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}>
+        {loading ? (
+          <SafeAreaView
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: "white",
+            }}>
+            <Text style={[styles.textDescription, { marginBottom:20 }]}>
+              Loading GOM
+            </Text>
+            <ActivityIndicator color="#05A8F3" size="large" />
+          </SafeAreaView>
+        ) : (
+          <>
+            <View style={styles.main}>
+              <MapView
+                ref={mapRef}
+                style={styles.map}
+                provider={Platform.OS === 'ios' ? null : PROVIDER_GOOGLE}>
+               
+              </MapView>
+            </View>
+          </>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
 
-
-const styles = StyleSheet.create({ 
-  container:{
-    flex: 1,
+const styles = StyleSheet.create({
+  barTools: {
+    height: 80,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF'
   },
-  map:{
-    flex:1,
-    width: width
-  }
+ 
+  main: {
+    width: '100%',
+    height: '100%',
+    //backgroundColor: "white",
+  },
+  map: {
+    flex: 1,
+  },
+  capas: {
+    position: 'absolute',
+    zIndex: 999,
+    right: 10,
+    top: '33%',
+    borderColor: 'black',
+    borderStyle: 'solid',
+    borderWidth: 0,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    padding: 10,
+    borderRadius: 10,
 
-})
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+
+  imgPin: {
+    width: 40,
+    height: 40,
+    borderRadius: 5,
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.36,
+    shadowRadius: 6.68,
+
+    elevation: 11,
+  },
+  imgTar: {
+    height: '100%',
+    width: '33%',
+    borderRadius: 5,
+    marginRight: 5,
+  },
+  
+  title: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    width: '100%',
+  },
+  description: {
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+  barButton: {
+    marginTop: 10,
+    alignItems: 'flex-end',
+  },
+  buttons: {
+    zIndex: 9999,
+    position: 'absolute',
+    height: 145,
+    justifyContent: 'space-between',
+    right: 3,
+    top: 0,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: "white",
+  },
+  scroll: {
+    flexGrow: 1,
+    backgroundColor: "white",
+    minHeight: '100%',
+    width: '100%',
+  },
+  textDescription: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: "black",
+  },
+});
+
+export default Ubucacion;

@@ -27,10 +27,7 @@ export default function Sponsors({ navigation }) {
 
                 <View style={{flex: 0.4, alignItems: 'flex-start',justifyContent: 'center'}}>
                     <TouchableOpacity style={styles.btnIcono} onPress={()=> {
-                        navigation.navigate('Perfil')
-
-                        
-
+                        navigation.popToTop();
                     }}>
                         <Image source={require('../../resources/back.png')} style={styles.imagen}></Image>
                     </TouchableOpacity>
@@ -47,8 +44,6 @@ export default function Sponsors({ navigation }) {
 
                 </View>
             </View>
-
-
 
 
         </View>

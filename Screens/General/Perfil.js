@@ -53,7 +53,7 @@ export const updateProfile = async (data) => {
   return result
 }
 
-
+//API AIzaSyDbNVDjRu4FbwmGmS8DqTnz1chbdtFbnUo
 
 export default function Perfil({ navigation }) {
 
@@ -73,7 +73,7 @@ export default function Perfil({ navigation }) {
         // console.log(querySnapshot.get('nombrePersona'))
         setNombre(querySnapshot.get('nombrePersona'))
       });
-    setPhotoUrl(getCurrentUser().photoURL)
+    //setPhotoUrl(getCurrentUser().photoURL)
   })
 
 
