@@ -197,6 +197,12 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
+    // Se añade esto
+
+    implementation project(':react-native-maps')
+
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
     }

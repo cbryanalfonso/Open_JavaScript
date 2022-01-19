@@ -1,0 +1,38 @@
+const azulIcono = '#2D365A';
+const backgroundColorPantalla = '#F9F9FC';
+const colorTexto = '#1E2F67';
+const colorBordeAzul = '#5FA6F2';
+const blanco = '#FFFFFF';
+const gris = '#838BA5';
+const verde = '#7CBE69';
+const grisBoton = '#F2F4F8';
+const azulIcono1 = '#253C53';
+const textoGris = '#767676';
+const azulContornoButton = '#05A8F3';
+const azulButton = '#468AD3';
+const azulButton1 = '#008DC4';
+const azulTexto = '#1D2E5D';
+const lilaTexto = '#7F86AA';
+const azulDegradado = '#C0E9FC';
+const grisTitle = '#4D4D4D';
+const textEvent = '#FD7F00';
+export {
+  azulIcono,
+  backgroundColorPantalla,
+  colorTexto,
+  colorBordeAzul,
+  blanco,
+  gris,
+  verde,
+  grisBoton,
+  azulIcono1,
+  textoGris,
+  azulContornoButton,
+  azulButton,
+  azulButton1,
+  azulTexto,
+  lilaTexto,
+  azulDegradado,
+  grisTitle,
+  textEvent,
+};
