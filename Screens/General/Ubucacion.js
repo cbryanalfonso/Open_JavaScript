@@ -435,7 +435,7 @@ function Ubucacion({ navigation }) {
                   <MapViewDirections
                     origin={coordinates[0]}
                     destination={coordinates[1]}
-                    apikey={"AIzaSyCnQqNuvMB3OR2jjkNT1seu7d80CTKt3NE"}
+                    
                     strokeWidth={3}
                     strokeColor="hotpink"
                     onReady={result =>{
